@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo-db
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  node-app:
+    build: .
+    container_name: node-service
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/shopdb
+      - SEED_SIZE=20000
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
